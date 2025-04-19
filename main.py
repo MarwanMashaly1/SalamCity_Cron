@@ -4,26 +4,26 @@ from dotenv import load_dotenv
 from db.connections import DBConfig
 from db.models import Database
 from utils.logger import setup_logging
-from utils.rate_limiter import RateLimiter
-from categorize import Categorize
 from scrapers.rahmaScraper import RahmaSpider
 from scrapers.snmcScraper import SnmcSpider
 from scrapers.kmaScraper import KmaSpider
 from scrapers.jamiOmarScraper import JamiOmarSpider
 from scrapers.bukhariScraper import BukhariSpider
-import time
+from utils.pipeline_helpers import handle_event, handle_prayer_time
+import os
 
-# Load ENV
+# Load ENV and set up logging
 load_dotenv()
 setup_logging()
 logger = logging.getLogger(__name__)
 
 # DB init
-hostName = load_dotenv('DB_HOST')
-user = load_dotenv('DB_USER')
-password = load_dotenv('DB_PASSWORD')
-dbName = load_dotenv('DB_NAME')
-port = load_dotenv('DB_PORT')
+hostName = os.getenv('DB_HOST')
+user = os.getenv('DB_USER')
+password = os.getenv('DB_PASSWORD')
+dbName = os.getenv('DB_NAME')
+port = os.getenv('DB_PORT')
+
 db = Database(
     host=hostName,
     user=user,
@@ -31,24 +31,10 @@ db = Database(
     db_name=dbName,
     port=port
 )
-rate_limiter = RateLimiter(rate=1)
-
-# Categorization (your existing class)
-cat = Categorize(token_counter_min=0, rpd=0, rpm=0)
-
-
-def categorize(title, desc):
-    while True:
-        cats = cat.classify(title, desc)
-        if 'limit' in cats:
-            logger.warning('Rate/cap limit, sleeping...')
-            time.sleep(90)
-            continue
-        return cats
-
 
 def run_pipeline():
     logger.info('Start pipeline at %s', datetime.utcnow())
+    
     spiders = [
         (RahmaSpider, True), 
         (KmaSpider, True),
@@ -60,25 +46,25 @@ def run_pipeline():
     for SpiderClass, js_render in spiders:
         try:
             spider = SpiderClass(js_render=js_render)
+
+            # Events
             events = spider.get_events()
             for ev in events:
-                cats = categorize(ev['title'], ev.get('description',''))
-                with rate_limiter():
-                    db.add_event(
-                        title=ev['title'],
-                        link=ev.get('link'),
-                        image=ev.get('image'),
-                        full_description=ev.get('description'),
-                        categories=cats,
-                        created_at=datetime.utcnow(),
-                        organization_id=spider.org_id,
-                        organization_name=spider.org_name
-                    )
+                handle_event(db, ev, spider)
+
+            # Prayer Times (if available)
+            if hasattr(spider, "get_prayer_times"):
+                prayer_times = spider.get_prayer_times()
+                for pt in prayer_times:
+                    handle_prayer_time(db, pt, spider)
+
         except Exception:
             logger.exception('Failed processing %s', SpiderClass.__name__)
+
     db.update_old_activity()
     db.close_connection()
     logger.info('Pipeline complete')
+
 
 if __name__ == '__main__':
     run_pipeline()
