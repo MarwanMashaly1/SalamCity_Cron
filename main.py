@@ -1,10 +1,15 @@
-import os, logging
+import logging
 from datetime import datetime
 from dotenv import load_dotenv
 from db.connections import DBConfig
 from db.models import Database
 from utils.logger import setup_logging
 from utils.rate_limiter import RateLimiter
+from categorize import Categorize
+from scrapers.jami import JamiSpider
+from scrapers.rahma import RahmaSpider
+from scrapers.kma import KmaSpider
+from scrapers.snmc import SnmcSpider
 import time
 
 # Load ENV
@@ -18,14 +23,9 @@ db = Database(db_conf)
 rate_limiter = RateLimiter(rate=1)
 
 # Import spiders
-from scrapers.rahma import RahmaSpider
-from scrapers.kma import KmaSpider
-from scrapers.snmc import SnmcSpider
-from scrapers.jami import JamiSpider
 # ... add others
 
 # Categorization (your existing class)
-from categorization.categoriy import Categorize
 cat = Categorize(token_counter_min=0, rpd=0, rpm=0)
 
 
