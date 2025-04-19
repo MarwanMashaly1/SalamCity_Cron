@@ -6,10 +6,11 @@ from db.models import Database
 from utils.logger import setup_logging
 from utils.rate_limiter import RateLimiter
 from categorize import Categorize
-from scrapers.jami import JamiSpider
-from scrapers.rahma import RahmaSpider
-from scrapers.kma import KmaSpider
-from scrapers.snmc import SnmcSpider
+from scrapers.rahmaScraper import RahmaSpider
+from scrapers.snmcScraper import SnmcSpider
+from scrapers.kmaScraper import KmaSpider
+from scrapers.jamiOmarScraper import JamiOmarSpider
+from scrapers.bukhariScraper import BukhariSpider
 import time
 
 # Load ENV
@@ -18,12 +19,19 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 # DB init
-db_conf = DBConfig()
-db = Database(db_conf)
+hostName = load_dotenv('DB_HOST')
+user = load_dotenv('DB_USER')
+password = load_dotenv('DB_PASSWORD')
+dbName = load_dotenv('DB_NAME')
+port = load_dotenv('DB_PORT')
+db = Database(
+    host=hostName,
+    user=user,
+    password=password,
+    db_name=dbName,
+    port=port
+)
 rate_limiter = RateLimiter(rate=1)
-
-# Import spiders
-# ... add others
 
 # Categorization (your existing class)
 cat = Categorize(token_counter_min=0, rpd=0, rpm=0)
@@ -34,7 +42,7 @@ def categorize(title, desc):
         cats = cat.classify(title, desc)
         if 'limit' in cats:
             logger.warning('Rate/cap limit, sleeping...')
-            time.sleep(60)
+            time.sleep(90)
             continue
         return cats
 
@@ -42,10 +50,11 @@ def categorize(title, desc):
 def run_pipeline():
     logger.info('Start pipeline at %s', datetime.utcnow())
     spiders = [
-        (RahmaSpider, True),   # JS‑heavy → Browserless
-        (KmaSpider, True),     # JS‑heavy → Browserless
-        (SnmcSpider, False),   # static → BS4
-        (JamiSpider, False),   # static → BS4
+        (RahmaSpider, True), 
+        (KmaSpider, True),
+        (SnmcSpider, False),
+        (JamiOmarSpider, False),
+        (BukhariSpider, False)
     ]
 
     for SpiderClass, js_render in spiders:

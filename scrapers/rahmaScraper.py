@@ -51,7 +51,7 @@ class RahmaSpider:
         print(events)
         return events
 
-    def get_prayerTimes(self):
+    def get_prayer_times(self):
         prayerTimes = []
         # prayerTimes.append(
         #     ("Masjid Ar-Rahma", "1216 Hunt Club Rd, Ottawa, ON K1V 2P1", "(613) 523-9977"))

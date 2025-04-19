@@ -105,7 +105,7 @@ class KmaSpider:
                 info["image"] = "https://kanatamuslims.ca/wp-content/uploads/2024/02/kma_logo-jpg.webp"
         return info
     
-    def get_prayerTimes(self):
+    def get_prayer_times(self):
         prayer_times = []
 
         script_text = self.prayer_soup.find_all('script')[1]
