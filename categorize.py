@@ -130,6 +130,7 @@ class Categorize:
                 if you can't determine the category from the description, please write "uncategorized". Do not answer with each one as yes or no but write only the categories names as detailed before and seperate each one with a comma.
                 ... 
                 and an event can have 1,2,3 or more categories based on the description
+                DO NOT SAY ANYTHING ELSE OR ADD ANYTHING ELSE TO THE RESPONSE EXCEPT THE CATEGORIES BASED ON THE DESCRIPTION EARLIER
 
                 ''' + "description: " + event_description
         elif event_name != None and event_description != None:
@@ -170,7 +171,7 @@ class Categorize:
 
                 ... 
                 and an event can have 1,2,3 or more categories based on the description
-
+                DO NOT SAY ANYTHING ELSE OR ADD ANYTHING ELSE TO THE RESPONSE EXCEPT THE CATEGORIES BASED ON THE DESCRIPTION EARLIER
                 ''' + "name: " + event_name + " description: " + event_description
         else:
             return "uncateogrized"

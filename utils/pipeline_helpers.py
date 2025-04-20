@@ -4,9 +4,12 @@ import logging
 from datetime import datetime
 from utils.rate_limiter import RateLimiter
 from categorize import Categorize
+from dateutil import parser
+
+
 
 logger = logging.getLogger(__name__)
-rate_limiter = RateLimiter(rate=1)
+rate_limiter = RateLimiter(rate=1, burst=1)
 cat = Categorize(token_counter_min=0, rpd=0, rpm=0)
 
 def categorize(title, desc):
@@ -21,10 +24,13 @@ def categorize(title, desc):
 
 def handle_event(db, ev, spider):
     cats = categorize(ev.get("title"), ev.get("description", ""))
-    with rate_limiter():
+    with rate_limiter:
+        date_str = ev.get("date")
+        normalized_date = parse_date(date_str) if date_str else None
+
         db.add_event(
             title=ev.get("title"),
-            date=ev.get("date"),
+            date=normalized_date,
             image=ev.get("image"),
             link=ev.get("link"),
             start_time=ev.get("start_time"),
@@ -44,7 +50,7 @@ def handle_event(db, ev, spider):
         logger.info("Added %s event to database: %s", spider.org_name, ev.get("title") or ev.get("link"))
 
 def handle_prayer_time(db, prayer_time, spider):
-    with rate_limiter():
+    with rate_limiter:
         db.add_prayer_time(
             prayer_time.get("prayer_name"),
             prayer_time.get("athan_time"),
@@ -53,3 +59,14 @@ def handle_prayer_time(db, prayer_time, spider):
             organization_name=spider.org_name
         )
         logger.info("Added %s prayer time to database: %s", spider.org_name, prayer_time.get("prayer_name"))
+
+def parse_date(date_str):
+    """
+    Parse a date string in various formats and return a string in 'YYYY-MM-DD' format.
+    Returns None if parsing fails.
+    """
+    try:
+        dt = parser.parse(date_str, fuzzy=True, dayfirst=False)
+        return dt.strftime('%Y-%m-%d')
+    except Exception:
+        return None

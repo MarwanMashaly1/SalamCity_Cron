@@ -1,7 +1,6 @@
 import logging
 from datetime import datetime
 from dotenv import load_dotenv
-from db.connections import DBConfig
 from db.models import Database
 from utils.logger import setup_logging
 from scrapers.rahmaScraper import RahmaSpider
@@ -20,13 +19,13 @@ logger = logging.getLogger(__name__)
 # DB init
 hostName = os.getenv('DB_HOST')
 user = os.getenv('DB_USER')
-password = os.getenv('DB_PASSWORD')
+password = os.getenv('DB_PASS')
 dbName = os.getenv('DB_NAME')
 port = os.getenv('DB_PORT')
 
 db = Database(
     host=hostName,
-    user=user,
+    username=user,
     password=password,
     db_name=dbName,
     port=port
@@ -46,6 +45,8 @@ def run_pipeline():
     for SpiderClass, js_render in spiders:
         try:
             spider = SpiderClass(js_render=js_render)
+            print(f"Spider initialized: {SpiderClass.__name__}")
+            print(f"Spider: {spider}")
 
             # Events
             events = spider.get_events()

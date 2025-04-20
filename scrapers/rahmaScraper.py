@@ -4,25 +4,28 @@ import time, random
 from utils.browser import get_html
 
 class RahmaSpider:
-    def __init__(self, proxy_list=None):
-        self.proxy_list = proxy_list or []
+    def __init__(self, js_render=False):
+        self.js_render = js_render
+        self.org_id = 3
+        self.org_name = "Masjid Ar-Rahma"
         # Fetch events page HTML
         events_url = "https://www.mymasjid.ca/events"
-        self.events_page = get_html(events_url, proxy_list=self.proxy_list)
+        self.events_page = get_html(events_url)
         
         # Fetch prayer times page HTML
         prayer_url = "https://app.mymasjid.ca/protected/public/timetable"
-        self.prayer_page = get_html(prayer_url, proxy_list=self.proxy_list)
+        self.prayer_page = get_html(prayer_url)
         
         self.events_soup = BeautifulSoup(self.events_page, 'html.parser')
         self.prayer_soup = BeautifulSoup(self.prayer_page, 'html.parser')
         print("Rahma Spider initialized")
 
     def get_events(self):
+        .3
         events = []
         table = self.events_soup.find(lambda tag: tag.name == 'table' and tag.has_attr(
             'id') and tag['id'] == "tablepress-4")
-        
+                
         rows = table.findAll(lambda tag: tag.name == 'tr')
         for row in rows:
             if row.find('td') is not None:
@@ -48,7 +51,6 @@ class RahmaSpider:
 
                 events.append(event)
                 time.sleep(random.uniform(2, 5))
-        print(events)
         return events
 
     def get_prayer_times(self):

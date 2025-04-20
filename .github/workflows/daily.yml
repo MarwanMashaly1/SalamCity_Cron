@@ -3,6 +3,9 @@ on:
   schedule:
     - cron: "0 3 * * *" # 3 AM UTC daily
   workflow_dispatch:
+  push:
+    branches:
+      - main # or 'master' or your active branch
 
 jobs:
   scraper:
@@ -24,10 +27,10 @@ jobs:
 
       - name: Run pipeline
         env:
-          DB_HOST: ${{ secrets.DB_HOST }}
-          DB_PORT: ${{ secrets.DB_PORT }}
-          DB_USER: ${{ secrets.DB_USER }}
-          DB_PASS: ${{ secrets.DB_PASS }}
-          DB_NAME: ${{ secrets.DB_NAME }}
-          BROWSERLESS_TOKEN: ${{ secrets.BROWSERLESS_TOKEN }}
+          DB_HOST: ${{ secrets.CPANEL_DB_HOST }}
+          DB_PORT: ${{ secrets.CPANEL_DB_PORT }}
+          DB_NAME: ${{ secrets.CPANEL_DB_NAME }}
+          DB_USER: ${{ secrets.CPANEL_DB_USER }}
+          DB_PASS: ${{ secrets.CPANEL_DB_PASSWORD }}
+          GENAI_API_KEY: ${{ secrets.GENAI_API_KEY }}
         run: python main.py

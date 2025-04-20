@@ -3,7 +3,10 @@ from urllib.request import urlopen
 from urllib.parse import urlparse, urlunparse, parse_qs
 
 class JamiOmarSpider:
-    def __init__(self) -> None:
+    def __init__(self, js_render=False) -> None:
+        self.js_render = js_render
+        self.org_id = 6
+        self.org_name = "Jami Omar"
         self.page = urlopen("https://www.jamiomar.org/")
         self.soup = BeautifulSoup(self.page, 'html.parser')
 

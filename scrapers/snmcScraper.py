@@ -5,17 +5,19 @@ from utils.browser import get_html
 
 
 class SnmcSpider:
-    def __init__(self, proxy_list=None):
-        self.proxy_list = proxy_list or []
+    def __init__(self, js_render=False):
+        self.js_render = js_render
+        self.org_id = 5
+        self.org_name = "SNMC"
         events_url = "https://snmc.ca/"
         prayer_url = "https://mawaqit.net/en/south-nepean-muslim-community-snmc-ottawa-k2j-4g3-canada"
 
         # Fetch events page HTML
-        self.events_page = get_html(events_url, proxy_list=self.proxy_list)
+        self.events_page = get_html(events_url)
         self.events_soup = BeautifulSoup(self.events_page, 'html.parser')
 
         # Fetch prayer times page HTML
-        self.prayer_page = get_html(prayer_url, proxy_list=self.proxy_list)
+        self.prayer_page = get_html(prayer_url)
         self.prayer_soup = BeautifulSoup(self.prayer_page, 'html.parser')
         print("SNMC Spider initialized")
 
@@ -32,7 +34,7 @@ class SnmcSpider:
             #                 event.find('a')['data-full-res'], "snmc"])
         return events_t
 
-    def get_prayerTimes(self):
+    def get_prayer_times(self):
         prayer_times = []
 
         script_text = self.prayer_soup.find_all('script')[1]

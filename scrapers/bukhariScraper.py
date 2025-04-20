@@ -6,11 +6,14 @@ from urllib.request import Request, urlopen
 class BukhariSpider:
     BASE_URL = "https://bukharicentre.com"
 
-    def __init__(self):
-        # headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
-        # req = Request("https://bukharicentre.com/events/", headers=headers)
-        # self.events_page = urlopen(req).read()
-        # self.events_soup = BeautifulSoup(self.events_page, 'html.parser')
+    def __init__(self, js_render=False):
+        self.js_render = js_render
+        self.org_id = 13
+        self.org_name = "Bukhari Centre"
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'}
+        req = Request("https://bukharicentre.com/events/", headers=headers)
+        self.events_page = urlopen(req).read()
+        self.events_soup = BeautifulSoup(self.events_page, 'html.parser')
         print("Bukhari Spider initialized")
         
     def get_events(self):

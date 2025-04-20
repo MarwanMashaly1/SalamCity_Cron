@@ -4,7 +4,10 @@ from datetime import datetime
 import json
 
 class KmaSpider:
-    def __init__(self):
+    def __init__(self,js_render=False):
+        self.js_render = js_render
+        self.org_id = 4
+        self.org_name = "KMA"
         self.events_page = urlopen("https://kanatamuslims.ca/events/").read()
         prayer_req = Request(
             url='https://mawaqit.net/en/w/kma-masjid-ottawa?showOnly5PrayerTimes=0', headers={'User-Agent': 'Mozilla/5.0'})
