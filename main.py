@@ -17,20 +17,26 @@ setup_logging()
 logger = logging.getLogger(__name__)
 
 # DB init
-hostName = os.getenv('DB_HOST')
-user = os.getenv('DB_USER')
-password = os.getenv('DB_PASS')
-dbName = os.getenv('DB_NAME')
-print(f"DB_HOST: {hostName}")
-print(f"DB_PORT: ", os.getenv('DB_PORT'))
+host   = os.getenv('DB_HOST')
+port   = int(os.getenv('DB_PORT', 3306))      # default to 3306 if empty
+name   = os.getenv('DB_NAME')
+user   = os.getenv('DB_USER')
+passwd = os.getenv('DB_PASSWORD')             # <— matches the workflow key
+
+print("ENV VARS SET:", 
+      "DB_HOST" in os.environ, 
+      "DB_PORT" in os.environ, 
+      "DB_NAME" in os.environ, 
+      "DB_USER" in os.environ, 
+      "DB_PASSWORD" in os.environ)
 
 port = int(os.getenv('DB_PORT') or 3306)
 
 db = Database(
-    host=hostName,
+    host=host,
     username=user,
-    password=password,
-    db_name=dbName,
+    password=passwd,
+    db_name=name,
     port=port
 )
 

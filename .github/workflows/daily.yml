@@ -31,6 +31,6 @@ jobs:
           DB_PORT: ${{ secrets.CPANEL_DB_PORT }}
           DB_NAME: ${{ secrets.CPANEL_DB_NAME }}
           DB_USER: ${{ secrets.CPANEL_DB_USER }}
-          DB_PASS: ${{ secrets.CPANEL_DB_PASSWORD }}
+          DB_PASSWORD: ${{ secrets.CPANEL_DB_PASSWORD }}
           GENAI_API_KEY: ${{ secrets.GENAI_API_KEY }}
         run: python main.py
