@@ -21,6 +21,9 @@ hostName = os.getenv('DB_HOST')
 user = os.getenv('DB_USER')
 password = os.getenv('DB_PASS')
 dbName = os.getenv('DB_NAME')
+print(f"DB_HOST: {hostName}")
+print(f"DB_PORT: ", os.getenv('DB_PORT'))
+
 port = int(os.getenv('DB_PORT') or 3306)
 
 db = Database(
