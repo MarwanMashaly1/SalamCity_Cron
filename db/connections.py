@@ -17,7 +17,7 @@ class ConnectionPool:
         return self.Session
 
     def _initialize_pool(self):
-        self.engine = create_engine(f'mysql+pymysql://{self.username}:{self.password}@{self.host}:3306/your_database',
+        self.engine = create_engine(f'mysql+pymysql://{self.username}:{self.password}@{self.host}:{self.port}/your_database',
                                     poolclass=QueuePool,
                                     pool_size=self.max_pool_size,
                                     max_overflow=0)
