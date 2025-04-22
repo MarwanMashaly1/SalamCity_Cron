@@ -131,6 +131,8 @@ class PrayerTime(Base):
 class Database:
     def __init__(self, username, password, host, port, db_name):
         # Create a connection to the database using pymsql
+        print("Connecting to the database: ", db_name, host, port)
+        print("Username: ", username)
         self.engine = create_engine(
             f'mysql+pymysql://{username}:{password}@{host}:{port}/{db_name}',
             echo=True,  # Set to False in production
