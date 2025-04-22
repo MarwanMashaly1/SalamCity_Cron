@@ -133,8 +133,9 @@ class Database:
         # Create a connection to the database using pymsql
         print("Connecting to the database: ", db_name, host, port)
         print("Username: ", username)
+        connection_string = f"mysql+pymysql://salamcit_Marwan:Marwan!2000@salamcity.ca:3306/salamcit_salamcitydb"
         self.engine = create_engine(
-            f'mysql+pymysql://{username}:{password}@{host}:{port}/{db_name}',
+           connection_string,
             echo=True,  # Set to False in production
             pool_size=20,
             max_overflow=0,
