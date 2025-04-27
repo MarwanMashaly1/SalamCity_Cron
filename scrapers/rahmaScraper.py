@@ -7,7 +7,7 @@ class RahmaSpider:
     def __init__(self, js_render=False):
         self.js_render = js_render
         self.org_id = 3
-        self.org_name = "Masjid Ar-Rahma"
+        self.org_name = "Masjid Ar-Rahmah"
         # Fetch events page HTML
         events_url = "https://www.mymasjid.ca/events"
         self.events_page = get_html(events_url)
