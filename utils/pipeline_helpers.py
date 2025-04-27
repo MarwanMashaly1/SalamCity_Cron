@@ -5,6 +5,7 @@ from datetime import datetime
 from utils.rate_limiter import RateLimiter
 from categorize import Categorize
 from dateutil import parser
+import time
 
 
 
@@ -13,14 +14,23 @@ rate_limiter = RateLimiter(rate=1, burst=1)
 cat = Categorize(token_counter_min=0, rpd=0, rpm=0)
 
 def categorize(title, desc):
-    import time
     while True:
-        cats = cat.classify(title, desc)
-        if 'limit' in cats:
-            logger.warning('Rate/cap limit, sleeping...')
-            time.sleep(90)
-            continue
-        return cats
+        try:
+            cats = cat.classify(title, desc)
+            return cats
+        except Exception as e:
+            msg = str(e)
+            if "token limit reached per day" in msg:
+                logger.warning('Daily token limit reached, categorizing as uncategorized.')
+                return "uncategorized"
+            elif ("token limit reached per minute" in msg or 
+                  "requests limit reached per minute" in msg):
+                logger.warning('Minute token/request limit reached, sleeping...')
+                time.sleep(90)
+                continue
+            else:
+                logger.error(f"Unexpected error in categorize: {msg}")
+                return "uncategorized"
 
 def handle_event(db, ev, spider):
     cats = categorize(ev.get("title"), ev.get("description", ""))
