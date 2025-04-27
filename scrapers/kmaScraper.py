@@ -99,8 +99,8 @@ class KmaSpider:
         event_image = event_soup.find('div', class_='mec-events-event-image')
         try:
             if event_image is not None:
-            # eventInfo.append("https://kanatamuslims.ca/" + event_image.find('img')['data-lazy-src'])
-                info["image"] = event_image.find('img')['data-lazy-src']
+                # eventInfo.append("https://kanatamuslims.ca/" + event_image.find('img')['data-lazy-src'])
+                info["image"] = "https://kanatamuslims.ca/" + event_image.find('img')['data-lazy-src']
         except:
             try:
                 info["image"] = event_image.find('img')['src']
