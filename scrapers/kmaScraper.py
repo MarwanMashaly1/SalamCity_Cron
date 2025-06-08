@@ -105,7 +105,7 @@ class KmaSpider:
             try:
                 info["image"] = event_image.find('img')['src']
             except:
-                info["image"] = "https://kanatamuslims.ca/wp-content/uploads/2024/02/kma_logo-jpg.webp"
+                info["image"] = "https://kanatamuslims.ca/wp-content/uploads/2025/04/cropped-MUSLIM-ASSOCIATION-1.png.webp"
         return info
     
     def get_prayer_times(self):
