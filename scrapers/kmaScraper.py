@@ -103,7 +103,11 @@ class KmaSpider:
                 info["image"] = "https://kanatamuslims.ca/" + event_image.find('img')['data-lazy-src']
         except:
             try:
-                info["image"] = event_image.find('img')['src']
+                image = event_image.find('img')['src']
+                if image.startswith('/'):
+                    info["image"] = "https://kanatamuslims.ca" + image
+                else:
+                    info["image"] = event_image.find('img')['src']
             except:
                 info["image"] = "https://kanatamuslims.ca/wp-content/uploads/2025/04/cropped-MUSLIM-ASSOCIATION-1.png.webp"
         return info
